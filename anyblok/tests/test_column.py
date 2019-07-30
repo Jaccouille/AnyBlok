@@ -8,7 +8,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public License,
 # v. 2.0. If a copy of the MPL was not distributed with this file,You can
 # obtain one at http://mozilla.org/MPL/2.0/.
-from anyblok.testing import sgdb_in
+from anyblok.testing import sgdb_in, LogCapture
 import pytest
 from anyblok.config import Configuration
 from anyblok.testing import tmp_configuration
@@ -21,6 +21,7 @@ from anyblok.column import (
     Column, Boolean, Json, String, BigInteger, Text, Selection, Date, DateTime,
     Time, Interval, Decimal, Float, LargeBinary, Integer, Sequence, Color,
     Password, UUID, URL, PhoneNumber, Email, Country)
+from logging import getLogger, INFO
 
 try:
     import cryptography  # noqa
@@ -230,6 +231,21 @@ class TestColumns:
         res = registry.execute('select col from test where id = %s' % test.id)
         res = res.fetchall()[0][0]
         assert res != 'col'
+
+    @pytest.mark.skipif(not has_cryptography,
+                        reason="cryptography is not installed")
+    def test_encrypt_key_columns_are_not_logged(self):
+        registry = self.init_registry(simple_column, ColumnType=String,
+                                      encrypt_key='secretkey')
+        test = registry.Test.insert(col='col')
+        logger = getLogger('test')
+
+        with LogCapture('test', level=INFO) as logs:
+            logger.info('%r', test)
+
+        from_log = logs.get_info_messages()[0]
+        from_repr = repr(test)
+        assert from_log != from_repr
 
     @pytest.mark.skipif(not has_cryptography,
                         reason="cryptography is not installed")
