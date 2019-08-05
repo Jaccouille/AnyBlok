@@ -30,6 +30,7 @@ CHANGELOG
 * Removed compatibility with **Python 3.4**, because this version is
   deprecated
 * Added *TimeStamp* column
+* added extra dependencies to install tested dialect for each tested SGDB
 
 0.22.5 (2019-06-24)
 -------------------
