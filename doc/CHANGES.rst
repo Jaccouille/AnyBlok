@@ -30,7 +30,12 @@ CHANGELOG
 * Removed compatibility with **Python 3.4**, because this version is
   deprecated
 * Added *TimeStamp* column
-* added extra dependencies to install tested dialect for each tested SGDB
+* Add in extra dependencies drivers used in unit tests for dialects 
+  tested with cPython
+
+  * postgres: psycopg2-binary
+  * mysql: mysqlclient
+  * mssql: pymssql
 
 0.22.5 (2019-06-24)
 -------------------
